@@ -1,16 +1,27 @@
 # PHP-Cookie
 
+This is a PHP7-only fork of [Delight IM's Cookie library](https://github.com/delight-im/PHP-Cookie)
+which uses the maximum level of security by default.
+
+This means:
+
+* Secure is set to `TRUE` unless you override it.
+* HTTP-Only is set to `TRUE` unless you override it.
+* Same-Site is set to `Strict` unless you override it.
+
+----
+
 Modern cookie management for PHP
 
 ## Requirements
 
- * PHP 5.3.0+
+ * PHP 7+
 
 ## Installation
 
  * Install via [Composer](https://getcomposer.org/) (recommended)
 
-   `$ composer require delight-im/cookie`
+   `$ composer require paragonie/cookie`
 
    Include the Composer autoloader:
 
@@ -30,9 +41,9 @@ Modern cookie management for PHP
 This library provides a static method that is compatible to PHP's built-in `setcookie(...)` function but includes support for more recent features such as the [`SameSite`](https://tools.ietf.org/html/draft-west-first-party-cookies-07) attribute:
 
 ```php
-\Delight\Cookie\Cookie::setcookie('SID', '31d4d96e407aad42');
+\ParagonIE\Cookie\Cookie::setcookie('SID', '31d4d96e407aad42');
 // or
-\Delight\Cookie\Cookie::setcookie('SID', '31d4d96e407aad42', time() + 3600, '/~rasmus/', 'example.com', true, true, 'Lax');
+\ParagonIE\Cookie\Cookie::setcookie('SID', '31d4d96e407aad42', time() + 3600, '/~rasmus/', 'example.com', true, true, 'Lax');
 ```
 
 ### Builder pattern
@@ -40,7 +51,7 @@ This library provides a static method that is compatible to PHP's built-in `setc
 Instances of the `Cookie` class let you build a cookie conveniently by setting individual properties. This class uses reasonable defaults that may differ from defaults of the `setcookie` function.
 
 ```php
-$cookie = new \Delight\Cookie\Cookie('SID');
+$cookie = new \ParagonIE\Cookie\Cookie('SID');
 $cookie->setValue('31d4d96e407aad42');
 $cookie->setMaxAge(60 * 60 * 24);
 // $cookie->setExpiryTime(time() + 60 * 60 * 24);
@@ -56,7 +67,7 @@ $cookie->save();
 The method calls can also be chained:
 
 ```php
-(new \Delight\Cookie\Cookie('SID'))->setValue('31d4d96e407aad42')->setMaxAge(60 * 60 * 24)->setSameSiteRestriction('Strict')->save();
+(new \ParagonIE\Cookie\Cookie('SID'))->setValue('31d4d96e407aad42')->setMaxAge(60 * 60 * 24)->setSameSiteRestriction('Strict')->save();
 ```
 
 A cookie can later be deleted simply like this:
@@ -73,15 +84,15 @@ Using the `Session` class, you can start and resume sessions in a way that is co
 
 ```php
 // start session and have session cookie with 'lax' same-site restriction
-\Delight\Cookie\Session::start();
+\ParagonIE\Cookie\Session::start();
 // or
-\Delight\Cookie\Session::start('Lax');
+\ParagonIE\Cookie\Session::start('Lax');
 
 // start session and have session cookie with 'strict' same-site restriction
-\Delight\Cookie\Session::start('Strict');
+\ParagonIE\Cookie\Session::start('Strict');
 
 // start session and have session cookie without any same-site restriction
-\Delight\Cookie\Session::start(null);
+\ParagonIE\Cookie\Session::start(null);
 ```
 
 All three calls respect the settings from PHP's `session_set_cookie_params(...)` function and the configuration options `session.name`, `session.cookie_lifetime`, `session.cookie_path`, `session.cookie_domain`, `session.cookie_secure`, `session.cookie_httponly` and `session.use_cookies`.
@@ -97,9 +108,9 @@ session_regenerate_id(true);
 are available via
 
 ```php
-\Delight\Cookie\Session::regenerate();
+\ParagonIE\Cookie\Session::regenerate();
 // and
-\Delight\Cookie\Session::regenerate(true);
+\ParagonIE\Cookie\Session::regenerate(true);
 ```
 
 if you want protection against session fixation attacks that comes with improved cookie handling.
@@ -107,7 +118,7 @@ if you want protection against session fixation attacks that comes with improved
 Additionally, access to the current internal session ID is provided via
 
 ```php
-\Delight\Cookie\Session::id();
+\ParagonIE\Cookie\Session::id();
 ```
 
 as a replacement for
@@ -121,21 +132,21 @@ session_id();
  * Read a value from the session (with optional default value):
 
    ```php
-   $value = \Delight\Cookie\Session::get($key);
+   $value = \ParagonIE\Cookie\Session::get($key);
    // or
-   $value = \Delight\Cookie\Session::get($key, $defaultValue);
+   $value = \ParagonIE\Cookie\Session::get($key, $defaultValue);
    ```
 
  * Write a value to the session:
 
    ```php
-   \Delight\Cookie\Session::set($key, $value);
+   \ParagonIE\Cookie\Session::set($key, $value);
    ```
 
  * Check whether a value exists in the session:
 
    ```php
-   if (\Delight\Cookie\Session::has($key)) {
+   if (\ParagonIE\Cookie\Session::has($key)) {
        // ...
    }
    ```
@@ -143,14 +154,14 @@ session_id();
  * Remove a value from the session:
 
    ```php
-   \Delight\Cookie\Session::delete($key);
+   \ParagonIE\Cookie\Session::delete($key);
    ```
 
  * Read *and then* immediately remove a value from the session:
 
    ```php
-   $value = \Delight\Cookie\Session::take($key);
-   $value = \Delight\Cookie\Session::take($key, $defaultValue);
+   $value = \ParagonIE\Cookie\Session::take($key);
+   $value = \ParagonIE\Cookie\Session::take($key, $defaultValue);
    ```
 
    This is often useful for flash messages, e.g. in combination with the `has(...)` method.
@@ -159,7 +170,7 @@ session_id();
 
 ```php
 $cookieHeader = 'Set-Cookie: test=php.net; expires=Thu, 09-Jun-2016 16:30:32 GMT; Max-Age=3600; path=/~rasmus/; secure';
-$cookieInstance = \Delight\Cookie\Cookie::parse($cookieHeader);
+$cookieInstance = \ParagonIE\Cookie\Cookie::parse($cookieHeader);
 ```
 
 ## Specifications

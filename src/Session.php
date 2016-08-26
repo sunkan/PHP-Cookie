@@ -1,153 +1,177 @@
 <?php
+declare(strict_types=1);
 
-/*
+/**
  * PHP-Cookie (https://github.com/delight-im/PHP-Cookie)
  * Copyright (c) delight.im (https://www.delight.im/)
  * Licensed under the MIT License (https://opensource.org/licenses/MIT)
  */
-
-namespace Delight\Cookie;
+namespace ParagonIE\Cookie;
 
 use Delight\Http\ResponseHeader;
 
 /**
  * Session management with improved cookie handling
  *
- * You can start a session using the static method `Session::start(...)` which is compatible to PHP's built-in `session_start()` function
+ * You can start a session using the static method `Session::start(...)` which
+ * is compatible to PHP's built-in `session_start()` function.
  *
- * Note that sessions must always be started before the HTTP headers are sent to the client, i.e. before the actual output starts
+ * Note that sessions must always be started before the HTTP headers are sent
+ * to the client, i.e. before the actual output starts.
  */
-final class Session {
+final class Session
+{
+    /**
+     * Starts or resumes a session in a way compatible to PHP's built-in `session_start()` function
+     *
+     * @param string $sameSiteRestriction Indicates that the cookie should not
+     *                                    be sent along with cross-site
+     *                                    requests (either `Lax`, `Strict`, or
+     *                                    en empty string.)
+     */
+    public static function start(
+        string $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_STRICT
+    ) {
+        // run PHP's built-in equivalent
+        \session_start();
 
-	private function __construct() { }
+        // intercept the cookie header (if any) and rewrite it
+        self::rewriteCookieHeader($sameSiteRestriction);
+    }
 
-	/**
-	 * Starts or resumes a session in a way compatible to PHP's built-in `session_start()` function
-	 *
-	 * @param string|null $sameSiteRestriction indicates that the cookie should not be sent along with cross-site requests (either `null`, `Lax` or `Strict`)
-	 */
-	public static function start($sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_LAX) {
-		// run PHP's built-in equivalent
-		session_start();
+    /**
+     * Returns the ID of the current session
+     *
+     * @return string the session ID or an empty string
+     */
+    public static function id(): string
+    {
+        return \session_id();
+    }
 
-		// intercept the cookie header (if any) and rewrite it
-		self::rewriteCookieHeader($sameSiteRestriction);
-	}
+    /**
+     * Re-generates the session ID in a way compatible to PHP's built-in
+     * `session_regenerate_id()` function.
+     *
+     * @param bool $deleteOldSession      Whether to delete the old session or
+     *                                    not.
+     * @param string $sameSiteRestriction Indicates that the cookie should not
+     *                                    be sent along with cross-site
+     *                                    requests (either `Lax`, `Strict`, or
+     *                                    en empty string.)
+     */
+    public static function regenerate(
+        bool $deleteOldSession = false,
+        string $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_STRICT
+    ) {
+        // run PHP's built-in equivalent
+        \session_regenerate_id($deleteOldSession);
 
-	/**
-	 * Returns the ID of the current session
-	 *
-	 * @return string the session ID or an empty string
-	 */
-	public static function id() {
-		return session_id();
-	}
+        // intercept the cookie header (if any) and rewrite it
+        self::rewriteCookieHeader($sameSiteRestriction);
+    }
 
-	/**
-	 * Re-generates the session ID in a way compatible to PHP's built-in `session_regenerate_id()` function
-	 *
-	 * @param bool $deleteOldSession whether to delete the old session or not
-	 * @param string|null $sameSiteRestriction indicates that the cookie should not be sent along with cross-site requests (either `null`, `Lax` or `Strict`)
-	 */
-	public static function regenerate($deleteOldSession = false, $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_LAX) {
-		// run PHP's built-in equivalent
-		session_regenerate_id($deleteOldSession);
+    /**
+     * Checks whether a value for the specified key exists in the session
+     *
+     * @param string $key The key to check
+     * @return bool       Whether there is a value for the specified key or not
+     */
+    public static function has(string $key): bool
+    {
+        return isset($_SESSION[$key]);
+    }
 
-		// intercept the cookie header (if any) and rewrite it
-		self::rewriteCookieHeader($sameSiteRestriction);
-	}
+    /**
+     * Returns the requested value from the session or, if not found, the
+     * specified default value
+     *
+     * @param string $key         The key to retrieve the value for.
+     * @param mixed $defaultValue The default value to return if the
+     *                            requested value cannot be found.
+     * @return mixed              The requested value or the default
+     *                            value.
+     */
+    public static function get(string $key, $defaultValue = null)
+    {
+        if (isset($_SESSION[$key])) {
+            return $_SESSION[$key];
+        }
+        return $defaultValue;
+    }
 
-	/**
-	 * Checks whether a value for the specified key exists in the session
-	 *
-	 * @param string $key the key to check
-	 * @return bool whether there is a value for the specified key or not
-	 */
-	public static function has($key) {
-		return isset($_SESSION[$key]);
-	}
+    /**
+     * Returns the requested value and removes it from the session
+     *
+     * This is identical to calling `get` first and then `remove` for the same
+     * key.
+     *
+     * @param string $key         The key to retrieve and remove the value for.
+     * @param mixed $defaultValue The default value to return if the requested
+     *                            value cannot be found.
+     * @return mixed              The requested value or the default value
+     */
+    public static function take(string $key, $defaultValue = null)
+    {
+        if (isset($_SESSION[$key])) {
+            $value = $_SESSION[$key];
 
-	/**
-	 * Returns the requested value from the session or, if not found, the specified default value
-	 *
-	 * @param string $key the key to retrieve the value for
-	 * @param mixed $defaultValue the default value to return if the requested value cannot be found
-	 * @return mixed the requested value or the default value
-	 */
-	public static function get($key, $defaultValue = null) {
-		if (isset($_SESSION[$key])) {
-			return $_SESSION[$key];
-		}
-		else {
-			return $defaultValue;
-		}
-	}
+            unset($_SESSION[$key]);
 
-	/**
-	 * Returns the requested value and removes it from the session
-	 *
-	 * This is identical to calling `get` first and then `remove` for the same key
-	 *
-	 * @param string $key the key to retrieve and remove the value for
-	 * @param mixed $defaultValue the default value to return if the requested value cannot be found
-	 * @return mixed the requested value or the default value
-	 */
-	public static function take($key, $defaultValue = null) {
-		if (isset($_SESSION[$key])) {
-			$value = $_SESSION[$key];
+            return $value;
+        }
+        return $defaultValue;
+    }
 
-			unset($_SESSION[$key]);
+    /**
+     * Sets the value for the specified key to the given value
+     *
+     * Any data that already exists for the specified key will be overwritten
+     *
+     * @param string $key the key to set the value for
+     * @param mixed $value the value to set
+     */
+    public static function set(string $key, $value)
+    {
+        $_SESSION[$key] = $value;
+    }
 
-			return $value;
-		}
-		else {
-			return $defaultValue;
-		}
-	}
+    /**
+     * Removes the value for the specified key from the session
+     *
+     * @param string $key the key to remove the value for
+     */
+    public static function delete(string $key)
+    {
+        unset($_SESSION[$key]);
+    }
 
-	/**
-	 * Sets the value for the specified key to the given value
-	 *
-	 * Any data that already exists for the specified key will be overwritten
-	 *
-	 * @param string $key the key to set the value for
-	 * @param mixed $value the value to set
-	 */
-	public static function set($key, $value) {
-		$_SESSION[$key] = $value;
-	}
+    /**
+     * Intercepts and rewrites the session cookie header
+     *
+     * @param string $sameSiteRestriction Indicates that the cookie should not
+     *                                    be sent along with cross-site
+     *                                    requests (either `Lax`, `Strict`, or
+     *                                    en empty string.)
+     */
+    private static function rewriteCookieHeader(
+        $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_STRICT
+    ) {
+        // get and remove the original cookie header set by PHP
+        $originalCookieHeader = ResponseHeader::take('Set-Cookie', session_name().'=');
 
-	/**
-	 * Removes the value for the specified key from the session
-	 *
-	 * @param string $key the key to remove the value for
-	 */
-	public static function delete($key) {
-		unset($_SESSION[$key]);
-	}
+        // if a cookie header has been found
+        if (isset($originalCookieHeader)) {
+            // parse it into a cookie instance
+            $parsedCookie = Cookie::parse($originalCookieHeader);
 
-	/**
-	 * Intercepts and rewrites the session cookie header
-	 *
-	 * @param string|null $sameSiteRestriction indicates that the cookie should not be sent along with cross-site requests (either `null`, `Lax` or `Strict`)
-	 */
-	private static function rewriteCookieHeader($sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_LAX) {
-		// get and remove the original cookie header set by PHP
-		$originalCookieHeader = ResponseHeader::take('Set-Cookie', session_name().'=');
-
-		// if a cookie header has been found
-		if (isset($originalCookieHeader)) {
-			// parse it into a cookie instance
-			$parsedCookie = Cookie::parse($originalCookieHeader);
-
-			// if the cookie has successfully been parsed
-			if (isset($parsedCookie)) {
-				// apply the supplied same-site restriction
-				$parsedCookie->setSameSiteRestriction($sameSiteRestriction);
-				// save the cookie
-				$parsedCookie->save();
-			}
-		}
-	}
-
+            // if the cookie has successfully been parsed
+            if (isset($parsedCookie)) {
+                // apply the supplied same-site restriction
+                $parsedCookie->setSameSiteRestriction($sameSiteRestriction);
+                // save the cookie
+                $parsedCookie->save();
+            }
+        }
+    }
 }

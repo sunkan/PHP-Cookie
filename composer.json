@@ -1,17 +1,17 @@
 {
-	"name": "delight-im/cookie",
-	"description": "Modern cookie management for PHP",
-	"require": {
-		"php": ">=5.3.0",
-		"delight-im/http": "^2.0"
-	},
-	"type": "library",
-	"keywords": [ "cookie", "cookies", "http", "csrf", "xss", "samesite", "same-site" ],
-	"homepage": "https://github.com/delight-im/PHP-Cookie",
-	"license": "MIT",
-	"autoload": {
-		"psr-4": {
-			"Delight\\Cookie\\": "src/"
-		}
-	}
+    "name": "paragonie/cookie",
+    "description": "Modern cookie management for PHP 7",
+    "require": {
+        "php": "^7",
+        "delight-im/http": "^2.0"
+    },
+    "type": "library",
+    "keywords": [ "cookie", "cookies", "http", "csrf", "xss", "samesite", "same-site" ],
+    "homepage": "https://github.com/paragonie/PHP-Cookie",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "ParagonIE\\Cookie\\": "src/"
+        }
+    }
 }

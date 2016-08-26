@@ -101,22 +101,22 @@ testCookie('TestCookie', '', time() - 3600, '/~rasmus/', 'example.com', 1);
 testCookie('cookie[three]', 'cookiethree');
 testCookie('cookie[two]', 'cookietwo');
 testCookie('cookie[one]', 'cookieone');
-testEqual((new \Delight\Cookie\Cookie('SID'))->setValue('31d4d96e407aad42')->setDomain('localhost')->setSameSiteRestriction('Strict'), 'Set-Cookie: SID=31d4d96e407aad42; path=/; httponly; SameSite=Strict');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('localhost'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('.localhost'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('127.0.0.1'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('.local'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('www.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('.www.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('www.example.com', true), 'Set-Cookie: key=value; path=/; domain=.www.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('.www.example.com', true), 'Set-Cookie: key=value; path=/; domain=.www.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('blog.example.com'), 'Set-Cookie: key=value; path=/; domain=.blog.example.com; httponly; SameSite=Lax');
-testEqual((new \Delight\Cookie\Cookie('key'))->setValue('value')->setDomain('.blog.example.com'), 'Set-Cookie: key=value; path=/; domain=.blog.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('SID'))->setValue('31d4d96e407aad42')->setDomain('localhost')->setSameSiteRestriction('Strict'), 'Set-Cookie: SID=31d4d96e407aad42; path=/; httponly; SameSite=Strict');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('localhost'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.localhost'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('127.0.0.1'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.local'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('www.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.www.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('www.example.com', true), 'Set-Cookie: key=value; path=/; domain=.www.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.www.example.com', true), 'Set-Cookie: key=value; path=/; domain=.www.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('blog.example.com'), 'Set-Cookie: key=value; path=/; domain=.blog.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.blog.example.com'), 'Set-Cookie: key=value; path=/; domain=.blog.example.com; httponly; SameSite=Lax');
 
 setcookie('hello', 'world', time() + 86400, '/foo/', 'example.com', true, true);
-testEqual(\Delight\Cookie\Cookie::parse(\Delight\Http\ResponseHeader::take('Set-Cookie')), (new \Delight\Cookie\Cookie('hello'))->setValue('world')->setMaxAge(86400)->setPath('/foo/')->setDomain('example.com')->setHttpOnly(true)->setSecureOnly(true));
+testEqual(\ParagonIE\Cookie\Cookie::parse(\Delight\Http\ResponseHeader::take('Set-Cookie')), (new \ParagonIE\Cookie\Cookie('hello'))->setValue('world')->setMaxAge(86400)->setPath('/foo/')->setDomain('example.com')->setHttpOnly(true)->setSecureOnly(true));
 
 /* END TEST COOKIES */
 
@@ -128,49 +128,49 @@ ini_set('zend.assertions', 1);
 ini_set('assert.exception', 1);
 
 assert(isset($_SESSION) === false);
-assert(\Delight\Cookie\Session::id() === '');
+assert(\ParagonIE\Cookie\Session::id() === '');
 
-\Delight\Cookie\Session::start();
+\ParagonIE\Cookie\Session::start();
 
 assert(isset($_SESSION) === true);
-assert(\Delight\Cookie\Session::id() !== '');
+assert(\ParagonIE\Cookie\Session::id() !== '');
 
-$oldSessionId = \Delight\Cookie\Session::id();
-\Delight\Cookie\Session::regenerate();
-assert(\Delight\Cookie\Session::id() !== $oldSessionId);
-assert(\Delight\Cookie\Session::id() !== null);
+$oldSessionId = \ParagonIE\Cookie\Session::id();
+\ParagonIE\Cookie\Session::regenerate();
+assert(\ParagonIE\Cookie\Session::id() !== $oldSessionId);
+assert(\ParagonIE\Cookie\Session::id() !== null);
 
 session_unset();
 
 assert(isset($_SESSION['key1']) === false);
-assert(\Delight\Cookie\Session::has('key1') === false);
-assert(\Delight\Cookie\Session::get('key1') === null);
-assert(\Delight\Cookie\Session::get('key1', 5) === 5);
-assert(\Delight\Cookie\Session::get('key1', 'monkey') === 'monkey');
+assert(\ParagonIE\Cookie\Session::has('key1') === false);
+assert(\ParagonIE\Cookie\Session::get('key1') === null);
+assert(\ParagonIE\Cookie\Session::get('key1', 5) === 5);
+assert(\ParagonIE\Cookie\Session::get('key1', 'monkey') === 'monkey');
 
-\Delight\Cookie\Session::set('key1', 'value1');
+\ParagonIE\Cookie\Session::set('key1', 'value1');
 
 assert(isset($_SESSION['key1']) === true);
-assert(\Delight\Cookie\Session::has('key1') === true);
-assert(\Delight\Cookie\Session::get('key1') === 'value1');
-assert(\Delight\Cookie\Session::get('key1', 5) === 'value1');
-assert(\Delight\Cookie\Session::get('key1', 'monkey') === 'value1');
+assert(\ParagonIE\Cookie\Session::has('key1') === true);
+assert(\ParagonIE\Cookie\Session::get('key1') === 'value1');
+assert(\ParagonIE\Cookie\Session::get('key1', 5) === 'value1');
+assert(\ParagonIE\Cookie\Session::get('key1', 'monkey') === 'value1');
 
-assert(\Delight\Cookie\Session::take('key1') === 'value1');
-assert(\Delight\Cookie\Session::take('key1') === null);
-assert(\Delight\Cookie\Session::take('key1', 'value2') === 'value2');
+assert(\ParagonIE\Cookie\Session::take('key1') === 'value1');
+assert(\ParagonIE\Cookie\Session::take('key1') === null);
+assert(\ParagonIE\Cookie\Session::take('key1', 'value2') === 'value2');
 assert(isset($_SESSION['key1']) === false);
-assert(\Delight\Cookie\Session::has('key1') === false);
+assert(\ParagonIE\Cookie\Session::has('key1') === false);
 
-\Delight\Cookie\Session::set('key2', 'value3');
+\ParagonIE\Cookie\Session::set('key2', 'value3');
 
 assert(isset($_SESSION['key2']) === true);
-assert(\Delight\Cookie\Session::has('key2') === true);
-assert(\Delight\Cookie\Session::get('key2', 'value4') === 'value3');
-\Delight\Cookie\Session::delete('key2');
-assert(\Delight\Cookie\Session::get('key2', 'value4') === 'value4');
-assert(\Delight\Cookie\Session::get('key2') === null);
-assert(\Delight\Cookie\Session::has('key2') === false);
+assert(\ParagonIE\Cookie\Session::has('key2') === true);
+assert(\ParagonIE\Cookie\Session::get('key2', 'value4') === 'value3');
+\ParagonIE\Cookie\Session::delete('key2');
+assert(\ParagonIE\Cookie\Session::get('key2', 'value4') === 'value4');
+assert(\ParagonIE\Cookie\Session::get('key2') === null);
+assert(\ParagonIE\Cookie\Session::has('key2') === false);
 
 session_destroy();
 
@@ -179,43 +179,43 @@ session_destroy();
 echo 'ALL TESTS PASSED'."\n";
 
 function testCookie($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false) {
-	$actualValue = \Delight\Cookie\Cookie::buildCookieHeader($name, $value, $expire, $path, $domain, $secure, $httpOnly);
-	if (is_null($actualValue)) {
-		$expectedValue = @simulateSetCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
-	}
-	else {
-		$expectedValue = simulateSetCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
-	}
+    $actualValue = \ParagonIE\Cookie\Cookie::buildCookieHeader($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    if (is_null($actualValue)) {
+        $expectedValue = @simulateSetCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    }
+    else {
+        $expectedValue = simulateSetCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    }
 
-	testEqual($actualValue, $expectedValue);
+    testEqual($actualValue, $expectedValue);
 }
 
 function testEqual($actualValue, $expectedValue) {
-	$actualValue = (string) $actualValue;
-	$expectedValue = (string) $expectedValue;
+    $actualValue = (string) $actualValue;
+    $expectedValue = (string) $expectedValue;
 
-	echo '[';
-	echo $expectedValue;
-	echo ']';
-	echo "\n";
+    echo '[';
+    echo $expectedValue;
+    echo ']';
+    echo "\n";
 
-	if (strcasecmp($actualValue, $expectedValue) !== 0) {
-		echo 'FAILED: ';
-		echo '[';
-		echo $actualValue;
-		echo ']';
-		echo ' !== ';
-		echo '[';
-		echo $expectedValue;
-		echo ']';
-		echo "\n";
+    if (strcasecmp($actualValue, $expectedValue) !== 0) {
+        echo 'FAILED: ';
+        echo '[';
+        echo $actualValue;
+        echo ']';
+        echo ' !== ';
+        echo '[';
+        echo $expectedValue;
+        echo ']';
+        echo "\n";
 
-		exit;
-	}
+        exit;
+    }
 }
 
 function simulateSetCookie($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false) {
-	setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
 
 	return \Delight\Http\ResponseHeader::take('Set-Cookie');
 }

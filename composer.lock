@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0804a652a36e46ac981e64d3faa261d8",
-    "content-hash": "2c414a79b9b311b99ddd2f64509cc58c",
+    "hash": "53328bf5f9f456c2cd1108f6749632c2",
+    "content-hash": "b8ee3b75ad43c5b79f71f391211a1940",
     "packages": [
         {
             "name": "delight-im/http",
@@ -51,7 +51,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.0"
+        "php": "^7"
     },
     "platform-dev": []
 }
