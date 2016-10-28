@@ -28,12 +28,14 @@ final class Session
      *                                    be sent along with cross-site
      *                                    requests (either `Lax`, `Strict`, or
      *                                    en empty string.)
+     * @param array $sessionConfig        Session configuration
      */
     public static function start(
-        string $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_STRICT
+        string $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_STRICT,
+        array $sessionConfig = []
     ) {
         // run PHP's built-in equivalent
-        \session_start();
+        \session_start($sessionConfig);
 
         // intercept the cookie header (if any) and rewrite it
         self::rewriteCookieHeader($sameSiteRestriction);
@@ -47,6 +49,14 @@ final class Session
     public static function id(): string
     {
         return \session_id();
+    }
+
+    /**
+     * Destroy the current active session.
+     */
+    public static function destroy(): bool
+    {
+        return \session_destroy();
     }
 
     /**
@@ -158,7 +168,7 @@ final class Session
         $sameSiteRestriction = Cookie::SAME_SITE_RESTRICTION_STRICT
     ) {
         // get and remove the original cookie header set by PHP
-        $originalCookieHeader = ResponseHeader::take('Set-Cookie', session_name().'=');
+        $originalCookieHeader = ResponseHeader::take('Set-Cookie', \session_name() . '=');
 
         // if a cookie header has been found
         if (isset($originalCookieHeader)) {
