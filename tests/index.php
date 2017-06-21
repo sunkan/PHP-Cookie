@@ -106,7 +106,7 @@ testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('l
 testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.localhost'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
 testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('127.0.0.1'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
 testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.local'), 'Set-Cookie: key=value; path=/; httponly; SameSite=Lax');
-testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
+testEqual((new \ParagonIE\Cookie\Cookie('key', 'example.com'))->setValue('value'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
 testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
 testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('www.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
 testEqual((new \ParagonIE\Cookie\Cookie('key'))->setValue('value')->setDomain('.www.example.com'), 'Set-Cookie: key=value; path=/; domain=.example.com; httponly; SameSite=Lax');
