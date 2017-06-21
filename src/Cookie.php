@@ -87,14 +87,15 @@ final class Cookie
      *
      * @param string $name The name of the cookie which is also the key for
      *                     future accesses via `$_COOKIE[...]`.
+     * @param string $domain The domain that the cookie will be valid for (including all subdomains)
      */
-    public function __construct(string $name)
+    public function __construct(string $name, string $domain = null)
     {
         $this->name = $name;
         $this->value = null;
         $this->expiryTime = 0;
         $this->path = '/';
-        $this->domain = self::normalizeDomain($_SERVER['HTTP_HOST']);
+        $this->setDomain(self::normalizeDomain($domain ?? $_SERVER['HTTP_HOST']));        
         $this->httpOnly = true;
         $this->secureOnly = false;
         $this->sameSiteRestriction = self::SAME_SITE_RESTRICTION_STRICT;
