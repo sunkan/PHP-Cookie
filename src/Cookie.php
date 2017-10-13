@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace ParagonIE\Cookie;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Modern cookie management for PHP
  *
@@ -230,6 +232,25 @@ final class Cookie
     }
 
     /**
+     * @param ResponseInterface $response
+     * @return ResponseInterface
+     * @throws \Exception
+     */
+    public function addToResponse(ResponseInterface $response): ResponseInterface
+    {
+        return $response->withHeader('Set-Cookie', self::buildCookieHeaderValue(
+            $this->name,
+            $this->value,
+            $this->expiryTime,
+            $this->path,
+            $this->domain,
+            $this->secureOnly,
+            $this->httpOnly,
+            $this->sameSiteRestriction
+        ));
+    }
+
+    /**
      * Deletes the cookie
      *
      * @return bool Whether the cookie header has successfully been sent (and
@@ -365,6 +386,28 @@ final class Cookie
         bool $httpOnly = true,
         string $sameSiteRestriction = self::SAME_SITE_RESTRICTION_STRICT
     ): string {
+        return 'Set-Cookie: ' . self::buildCookieHeaderValue(
+            $name,
+            $value,
+            $expiryTime,
+            $path,
+            $domain,
+            $secureOnly,
+            $httpOnly,
+            $sameSiteRestriction
+        );
+    }
+
+    public static function buildCookieHeaderValue(
+        string $name,
+        $value = null,
+        int $expiryTime = 0,
+        string $path = '',
+        string $domain = '',
+        bool $secureOnly = true,
+        bool $httpOnly = true,
+        string $sameSiteRestriction = self::SAME_SITE_RESTRICTION_STRICT
+    ) {
         if (!self::isNameValid($name)) {
             throw new \Exception('Invalid cookie name');
         }
@@ -390,7 +433,7 @@ final class Cookie
             $forceShowExpiry
         );
 
-        $headerStr = 'Set-Cookie: ' . $name . '=' . urlencode($value);
+        $headerStr = $name . '=' . urlencode($value);
 
         if (!empty($expiryTimeStr)) {
             $headerStr .= '; expires=' . $expiryTimeStr;
@@ -418,8 +461,7 @@ final class Cookie
 
         if ($sameSiteRestriction === self::SAME_SITE_RESTRICTION_LAX) {
             $headerStr .= '; SameSite=Lax';
-        }
-        elseif ($sameSiteRestriction === self::SAME_SITE_RESTRICTION_STRICT) {
+        } elseif ($sameSiteRestriction === self::SAME_SITE_RESTRICTION_STRICT) {
             $headerStr .= '; SameSite=Strict';
         }
 

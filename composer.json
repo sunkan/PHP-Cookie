@@ -3,6 +3,7 @@
     "description": "Modern cookie management for PHP 7",
     "require": {
         "php": "^7",
+        "psr/http-message": "~1.0",
         "delight-im/http": "^2.0"
     },
     "type": "library",
